@@ -1,4 +1,4 @@
-
+# other examples, see https://github.com/nix-community/disko/blob/master/example/
 {
   disko.devices = {
     disk = {
@@ -8,26 +8,29 @@
         content = {
           type = "gpt";
           partitions = {
-            boot = {
-              size = "1M";
-              type = "EF02";
-              priority = 1;
-            };
             ESP = {
-              size = "512M";
+              size = "500M";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
               };
             };
-            root = {
+            luks = {
               size = "100%";
               content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/";
+                type = "luks";
+                name = "crypted";
+                settings.allowDiscards = true; # Enable SSD TRIM support
+                passwordFile = "/tmp/secret.key"; # install time key file location
+                # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
+                content = {
+                  type = "filesystem";
+                  format = "ext4";
+                  mountpoint = "/";
+                };
               };
             };
           };

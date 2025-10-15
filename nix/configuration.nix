@@ -4,7 +4,7 @@
   imports = [
     ./users/users.nix
     ./modules/ssh.nix
-    ./hardware-configuration.nix
+    ./vps/hetzner/hardware-configuration.nix
     ./modules/zsh.nix
    ];
 
@@ -13,6 +13,10 @@
 
   # Bootloader.
   boot.loader.grub.enable = true;
+
+  
+  boot.initrd.kernelModules = [ "virtio_gpu" ];
+  boot.kernelParams = [ "console=tty" ];  
 
   networking.hostName = "matrix";
 
