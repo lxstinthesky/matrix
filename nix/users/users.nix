@@ -5,15 +5,18 @@
   users.defaultUserShell = pkgs.zsh;
   users.users.neo = {
     isNormalUser = true;
-    description = "Matrix User 1";
+    description = "Neovim only user";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
+    openssh.authorizedKeys.keyFiles = [
+      ./keys/neo.pub
+    ];
   };
 
   users.users.morpheus = {
     isNormalUser = true;
-    description = "Matrix User 2";
+    description = "Insert joke here";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
@@ -21,7 +24,7 @@
 
   users.users.trinity = {
     isNormalUser = true;
-    description = "Matrix User 3";
+    description = "Named after an atom bomb test";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];

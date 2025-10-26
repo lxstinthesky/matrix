@@ -3,7 +3,7 @@
 {
   imports = [
     ./users/users.nix
-    ./modules/ssh.nix
+    ./modules/security.nix
     ./vps/hetzner/hardware-configuration.nix
     ./modules/zsh.nix
    ];
@@ -54,9 +54,9 @@
       diskSize = 5000; # 5GB, needed to prevent docker error running out of space
 
       # Networking configuration
-      #forwardPorts = [
-      #  { from = "host"; host.port = 2222; guest.port = 22; }
-      #];
+      forwardPorts = [
+        { from = "host"; host.port = 2222; guest.port = 22; }
+      ];
     };
 
     # Add VM-specific users
@@ -68,8 +68,6 @@
       initialPassword = "smith";
       packages = with pkgs; [  ];
     };
-
-    security.sudo.wheelNeedsPassword = false;
 
     # VM-specific packages
     environment.systemPackages = with pkgs; [
