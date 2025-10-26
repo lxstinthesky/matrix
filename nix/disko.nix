@@ -11,6 +11,7 @@
             ESP = {
               size = "500M";
               type = "EF00";
+              label = "boot";
               content = {
                 type = "filesystem";
                 format = "vfat";
@@ -20,12 +21,11 @@
             };
             luks = {
               size = "100%";
+              label = "luks";
               content = {
                 type = "luks";
                 name = "crypted";
                 settings.allowDiscards = true; # Enable SSD TRIM support
-                passwordFile = "/tmp/secret.key"; # install time key file location
-                # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "filesystem";
                   format = "ext4";

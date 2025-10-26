@@ -11,8 +11,22 @@
   # nix settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Bootloader.
-  boot.loader.grub.enable = true;
+  # Bootloader to work with LUKS
+  boot.loader.grub = {
+    enable = true;
+    # https://github.com/NixOS/nixpkgs/issues/55332
+    device = "nodev";                    # Don't install to MBR
+    efiSupport = true;                   # Enable EFI support
+    enableCryptodisk = true;             # Enable LUKS support
+  };
+  
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # LUKS configuration
+  boot.initrd.luks.devices."crypted" = {
+    device = "/dev/disk/by-partlabel/luks";
+    allowDiscards = true;
+  };
 
   
   boot.initrd.kernelModules = [ "virtio_gpu" ];
