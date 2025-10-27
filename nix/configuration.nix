@@ -10,6 +10,7 @@
 
   # nix settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.download-buffer-size = 524288000; # 500MB
 
   # Bootloader to work with LUKS
   boot.loader.grub = {
@@ -72,6 +73,11 @@
         { from = "host"; host.port = 2222; guest.port = 22; }
       ];
     };
+
+    # this is related to luks remote unlock via ssh
+    # Disable initrd secrets for VM builds to avoid secret error 
+    # Error is not present in real depolyments
+    boot.initrd.secrets = lib.mkForce {};
 
     # Add VM-specific users
     users.users.smith = {
