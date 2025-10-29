@@ -16,10 +16,13 @@
 
   users.users.morpheus = {
     isNormalUser = true;
-    description = "Insert joke here";
+    description = "I'm colorblind";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
+    openssh.authorizedKeys.keyFiles = [
+      ./keys/morpheus.pub
+    ];
   };
 
   users.users.trinity = {
