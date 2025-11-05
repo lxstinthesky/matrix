@@ -1,0 +1,78 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Nix Flake Check",
+            "type": "shell",
+            "command": "nix",
+            "args": [
+                "flake",
+                "check"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build VM",
+            "type": "shell",
+            "command": "nixos-rebuild",
+            "args": [
+                "build-vm",
+                "--flake",
+                ".#matrix"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run VM",
+            "type": "shell",
+            "command": "./result/bin/run-matrix-vm",
+            "group": "test",
+            "dependsOn": "Build VM",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean VM",
+            "type": "shell",
+            "command": "rm",
+            "args": [
+                "-f",
+                "./matrix.qcow2"
+            ],
+            "group": "test",
+            "dependsOn": "Build VM",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
