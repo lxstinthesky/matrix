@@ -8,12 +8,34 @@
       PermitRootLogin = "no";                    # Disable root login
       PasswordAuthentication = false;            # Force SSH key auth only
       PubkeyAuthentication = true;               # Enable SSH keys
+      LogLevel = "VERBOSE";                      # More detailed logging, for fail2ban
     };
     ports = [ 22 ];
     # using the same key as for initrd
     hostKeys = [
       { path = "/etc/secrets/initrd/ssh_host_ed25519_key"; type = "ed25519"; }
     ];
+  };
+
+  services.fail2ban = {
+    enable = true;
+    maxretry = 5; # Ban IP after 5 failures
+    ignoreIP = [
+
+    ];
+    bantime = "24h"; # Ban IPs for one day on the first ban
+    bantime-increment = {
+      enable = true; # Enable increment of bantime after each violation
+      multipliers = "1 2 3 4 5 6 7"; # everytime one day more
+      maxtime = "168h"; # Do not ban for more than 1 week
+      overalljails = true; # Calculate the bantime based on all the violations
+    };
+    
+    # fail2ban ships with a default sshd jail, we override it here, to be explicit
+    jails.sshd.settings = {
+      port = 22; # explicit
+      maxretry = 5;
+    };
   };
 
   # remote unlock for luks via ssh
