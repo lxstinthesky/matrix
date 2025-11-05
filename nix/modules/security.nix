@@ -27,6 +27,7 @@
         port = 22;
         authorizedKeys = [ 
           (builtins.readFile ../users/keys/neo.pub) 
+          (builtins.readFile ../users/keys/morpheus.pub) 
         ];
         hostKeys = [ "/etc/secrets/initrd/ssh_host_ed25519_key" ];
         shell = "/bin/cryptsetup-askpass";
