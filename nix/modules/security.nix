@@ -39,7 +39,7 @@
   };
 
   # remote unlock for luks via ssh
-  boot.kernelParams = [ "ip=dhcp" ];
+  # https://nixos.wiki/wiki/Remote_disk_unlocking
   boot.initrd = {
     availableKernelModules = [ "virtio-pci" ];
     network = {
@@ -57,7 +57,8 @@
     };
   };
 
-  # Generate SSH host key for initrd
+  # Generate SSH host key for initrd (also LUKS remote unlock)
+  # we make sure it's the same ssh host key for both initrd and normal system
   system.activationScripts.initrd-ssh-key = {
     text = ''
       mkdir -p /etc/secrets/initrd
