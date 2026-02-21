@@ -1,0 +1,20 @@
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: postgres
+    tag: "18-alpine"
+  primary:
+    persistence:
+      size: 1Gi # defines the size for $PGDATA
+
+# https://element-hq.github.io/dendrite/installation/helm/install
+# https://github.com/element-hq/dendrite/blob/main/helm/dendrite/values.yaml
+dendrite_config:
+  global:
+    server_name: "localhost"  # Change this to your domain for production
+    # For testing locally, you can use localhost or your host IP
+  
+  # Optional: Enable client API explicitly
+  client_api:
+    registration_disabled: false  # Set to true in production

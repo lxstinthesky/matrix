@@ -45,7 +45,7 @@
         {
             "label": "Run VM",
             "type": "shell",
-            "command": "./result/bin/run-matrix-vm",
+            "command": "./result/bin/run-matrix-test-vm",
             "group": "test",
             "dependsOn": "Build VM",
             "presentation": {
@@ -62,10 +62,9 @@
             "command": "rm",
             "args": [
                 "-f",
-                "./matrix.qcow2"
+                "./matrix-test.qcow2"
             ],
             "group": "test",
-            "dependsOn": "Build VM",
             "presentation": {
                 "echo": true,
                 "reveal": "always",
