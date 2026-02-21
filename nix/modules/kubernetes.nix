@@ -27,7 +27,7 @@
   # TODO: Add these for multi-node: 6443 2379 2380 10250
   networking.firewall.trustedInterfaces = [ "cni0" ];
   
-  environment.variables.KUBECONFIG = "/etc/rancher/k3s/config.yaml";
+  environment.variables.KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
 
   # Copy all needed config files
   environment.etc."rancher/k3s/config.yaml".source = ../../etc/rancher/k3s/config.yaml;
@@ -43,7 +43,7 @@
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      Environment = "KUBECONFIG=/etc/rancher/k3s/config.yaml";
+      Environment = "KUBECONFIG=/etc/rancher/k3s/k3s.yaml";
     };
     
     script = ''
