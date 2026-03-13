@@ -26,6 +26,26 @@
 
     networking.hostName = lib.mkForce "matrix-test";
 
+    # DNS configuration for local testing
+    services.dnsmasq = {
+      enable = true;
+      settings = {
+        # Listen on localhost only
+        listen-address = "127.0.0.1";
+        # Bind to loopback interface
+        interface = "lo";
+        # Don't read /etc/resolv.conf
+        no-resolv = true;
+        # Forward all other queries to Cloudflare and Google DNS
+        server = [ "1.1.1.1" "8.8.8.8" ];
+        # Local DNS overrides for testing
+        address = [ 
+          "/matrix.test.com/127.0.0.1"
+          "/test.com/127.0.0.1"
+        ];
+      };
+    };
+
     # this is related to luks remote unlock via ssh
     # Disable initrd secrets for VM builds to avoid secret error 
     # Error is not present in real depolyments
@@ -33,7 +53,7 @@
 
     # Remove Hetzner-specific settings
     networking.useDHCP = lib.mkForce true;
-    networking.nameservers = lib.mkForce [ "1.1.1.1" "8.8.8.8" ];
+    networking.nameservers = lib.mkForce [ "127.0.0.1" ];  # Point to dnsmasq for local DNS testing
     networking.interfaces = lib.mkForce {};
     networking.defaultGateway = lib.mkForce null;
     networking.defaultGateway6 = lib.mkForce null;
