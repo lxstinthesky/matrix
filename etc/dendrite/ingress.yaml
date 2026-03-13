@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dendrite
+  namespace: matrix
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: matrix.test.com
+      http:
+        paths:
+          - path: /_matrix
+            pathType: Prefix
+            backend:
+              service:
+                name: dendrite
+                port:
+                  number: 8008
+          - path: /_synapse
+            pathType: Prefix
+            backend:
+              service:
+                name: dendrite
+                port:
+                  number: 8008
+          - path: /.well-known/matrix
+            pathType: Prefix
+            backend:
+              service:
+                name: dendrite
+                port:
+                  number: 8008

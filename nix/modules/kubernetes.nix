@@ -32,6 +32,7 @@
   # Copy all needed config files
   environment.etc."rancher/k3s/config.yaml".source = ../../etc/rancher/k3s/config.yaml;
   environment.etc."dendrite/values.yaml".source = ../../etc/dendrite/values.yaml;
+  environment.etc."dendrite/ingress.yaml".source = ../../etc/dendrite/ingress.yaml;
 
   # Deploy Dendrite after k3s is ready
   systemd.services.dendrite-deploy = {
@@ -62,6 +63,18 @@
         -f /etc/dendrite/values.yaml \
         --create-namespace \
         --namespace matrix
+
+      until ${pkgs.kubectl}/bin/kubectl get svc -n matrix dendrite; do
+        echo "Waiting for Dendrite service..."
+        sleep 5
+      done
+
+      until ${pkgs.kubectl}/bin/kubectl get endpoints -n matrix dendrite -o jsonpath='{.subsets[0].addresses[0].ip}' >/dev/null 2>&1; do
+        echo "Waiting for Dendrite endpoints..."
+        sleep 5
+      done
+
+      ${pkgs.kubectl}/bin/kubectl apply -f /etc/dendrite/ingress.yaml
       
       # Wait for Dendrite to be ready
       sleep 10

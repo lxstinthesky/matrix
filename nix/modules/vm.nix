@@ -13,7 +13,7 @@
       # Networking configuration
       forwardPorts = [
         { from = "host"; host.port = 2222; guest.port = 22; }
-        { from = "host"; host.port = 8008; guest.port = 8008; }
+        { from = "host"; host.port = 8080; guest.port = 80; }
         #{ from = "host"; host.port = 443; guest.port = 443; }
       ];
 
@@ -76,31 +76,5 @@
 
     # in order to build VM on x86_64 host
     nixpkgs.hostPlatform = lib.mkForce "x86_64-linux";
-
-    # Automatic port forwarding service
-    systemd.services.dendrite-portforward = {
-      description = "Port forward Dendrite service";
-      after = [ "k3s.service" "dendrite-deploy.service" ];
-      wants = [ "k3s.service" "dendrite-deploy.service" ];
-      wantedBy = [ "multi-user.target" ];
-      
-      serviceConfig = {
-        Type = "simple";
-        Restart = "always";
-        RestartSec = "10s";
-        Environment = "KUBECONFIG=/etc/rancher/k3s/k3s.yaml";
-      };
-      
-      script = ''
-        # Wait for dendrite service to exist
-        until ${pkgs.kubectl}/bin/kubectl get svc dendrite -n matrix 2>/dev/null; do
-          echo "Waiting for dendrite service..."
-          sleep 5
-        done
-        
-        # Port forward on all interfaces (0.0.0.0) so VM can access it
-        ${pkgs.kubectl}/bin/kubectl port-forward -n matrix svc/dendrite 8008:8008 --address=0.0.0.0
-      '';
-    };
   };
 }

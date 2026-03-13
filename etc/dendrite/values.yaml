@@ -12,9 +12,12 @@ postgresql:
 # https://github.com/element-hq/dendrite/blob/main/helm/dendrite/values.yaml
 dendrite_config:
   global:
-    server_name: "localhost"  # Change this to your domain for production
-    # For testing locally, you can use localhost or your host IP
+    server_name: "matrix.test.com"
   
   # Optional: Enable client API explicitly
   client_api:
-    registration_disabled: false  # Set to true in production
+    registration_disabled: true  # Set to true in production
+
+service:
+  type: ClusterIP
+  port: 8008
