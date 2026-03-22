@@ -5,10 +5,11 @@
     ./vps/hetzner/hardware-configuration.nix
     ./modules/networking/networkingA.nix
     ./modules/security.nix
-    ./modules/kubernetes.nix
     ./users/users.nix
     ./modules/zsh.nix
     ./modules/vm.nix
+    ./modules/matrix/synapse.nix
+    ./modules/networking/proxy.nix
    ];
 
   # nix settings
