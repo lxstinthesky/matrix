@@ -3,27 +3,19 @@ kind: Ingress
 metadata:
   name: dendrite
   namespace: matrix
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - matrix.example.com
+      secretName: matrix-example-com-tls
   rules:
-    - host: matrix.test.com
+    - host: matrix.example.com
       http:
         paths:
           - path: /_matrix
-            pathType: Prefix
-            backend:
-              service:
-                name: dendrite
-                port:
-                  number: 8008
-          - path: /_synapse
-            pathType: Prefix
-            backend:
-              service:
-                name: dendrite
-                port:
-                  number: 8008
-          - path: /.well-known/matrix
             pathType: Prefix
             backend:
               service:

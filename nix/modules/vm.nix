@@ -42,6 +42,8 @@
         address = [ 
           "/matrix.test.com/127.0.0.1"
           "/test.com/127.0.0.1"
+          "/matrix.example.com/127.0.0.1"
+          "/example.com/127.0.0.1"
         ];
       };
     };

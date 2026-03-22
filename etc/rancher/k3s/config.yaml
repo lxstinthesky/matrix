@@ -1,3 +1,5 @@
 write-kubeconfig-mode: "0644"
 tls-san:
   - "matrix"
+  - "matrix.example.com"
+  - "example.com"

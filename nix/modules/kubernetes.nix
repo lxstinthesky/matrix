@@ -33,6 +33,9 @@
   environment.etc."rancher/k3s/config.yaml".source = ../../etc/rancher/k3s/config.yaml;
   environment.etc."dendrite/values.yaml".source = ../../etc/dendrite/values.yaml;
   environment.etc."dendrite/ingress.yaml".source = ../../etc/dendrite/ingress.yaml;
+  environment.etc."dendrite/well-known-ingress.yaml".source = ../../etc/dendrite/well-known-ingress.yaml;
+  environment.etc."dendrite/well-known-client.json".source = ../../etc/dendrite/well-known-client.json;
+  environment.etc."dendrite/well-known-server.json".source = ../../etc/dendrite/well-known-server.json;
 
   # Deploy Dendrite after k3s is ready
   systemd.services.dendrite-deploy = {
@@ -75,6 +78,15 @@
       done
 
       ${pkgs.kubectl}/bin/kubectl apply -f /etc/dendrite/ingress.yaml
+      ${pkgs.kubectl}/bin/kubectl create configmap matrix-well-known-client \
+        --namespace matrix \
+        --from-file=client=/etc/dendrite/well-known-client.json \
+        --dry-run=client -o yaml | ${pkgs.kubectl}/bin/kubectl apply -f -
+      ${pkgs.kubectl}/bin/kubectl create configmap matrix-well-known-server \
+        --namespace matrix \
+        --from-file=server=/etc/dendrite/well-known-server.json \
+        --dry-run=client -o yaml | ${pkgs.kubectl}/bin/kubectl apply -f -
+      ${pkgs.kubectl}/bin/kubectl apply -f /etc/dendrite/well-known-ingress.yaml
       
       # Wait for Dendrite to be ready
       sleep 10

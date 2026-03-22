@@ -1,0 +1,93 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: matrix-well-known
+  namespace: matrix
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: matrix-well-known-cors@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - example.com
+      secretName: example-com-tls
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /.well-known/matrix/client
+            pathType: Exact
+            backend:
+              service:
+                name: matrix-well-known
+                port:
+                  number: 80
+          - path: /.well-known/matrix/server
+            pathType: Exact
+            backend:
+              service:
+                name: matrix-well-known
+                port:
+                  number: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix-well-known
+  namespace: matrix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matrix-well-known
+  template:
+    metadata:
+      labels:
+        app: matrix-well-known
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: client-content
+              mountPath: /usr/share/nginx/html/.well-known/matrix/client
+              subPath: client
+              readOnly: true
+            - name: server-content
+              mountPath: /usr/share/nginx/html/.well-known/matrix/server
+              subPath: server
+              readOnly: true
+      volumes:
+        - name: client-content
+          configMap:
+            name: matrix-well-known-client
+        - name: server-content
+          configMap:
+            name: matrix-well-known-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matrix-well-known
+  namespace: matrix
+spec:
+  selector:
+    app: matrix-well-known
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: matrix-well-known-cors
+  namespace: matrix
+spec:
+  headers:
+    contentTypeNosniff: true
+    customResponseHeaders:
+      Access-Control-Allow-Origin: "*"
+      Content-Type: "application/json"
