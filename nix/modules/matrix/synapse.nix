@@ -1,5 +1,8 @@
 { config, pkgs, inputs, lib, ... }:
-
+let
+  fqdn = "${config.networking.hostName}.${config.networking.domain}";
+  baseUrl = "https://${fqdn}";
+in
 {
   services.postgresql = {
     enable = true;
@@ -25,8 +28,8 @@
 
   services.matrix-synapse = {
     enable = true;
-    settings.server_name = "matrix.com";
-    settings.public_baseurl = "http://test.matrix.com";
+    settings.server_name = config.networking.domain;
+    settings.public_baseurl = baseUrl;
     # The public base URL value must match the `base_url` value set in `clientConfig` above.
     # The default value here is based on `server_name`, so if your `server_name` is different
     # from the value of `fqdn` above, you will likely run into some mismatched domain names

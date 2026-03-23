@@ -23,6 +23,11 @@ let
 in
 {
   networking.hostName = hostname;
+  networking.domain = "asterism.ch";
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
   
   # Disable DHCP globally
   networking.useDHCP = false;

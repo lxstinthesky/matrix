@@ -13,8 +13,7 @@
       # Networking configuration
       forwardPorts = [
         { from = "host"; host.port = 2222; guest.port = 22; }
-        { from = "host"; host.port = 8080; guest.port = 80; }
-        #{ from = "host"; host.port = 443; guest.port = 443; }
+        { from = "host"; host.port = 8008; guest.port = 8008; }
       ];
 
       # Use QEMU's built-in DHCP with predictable addresses

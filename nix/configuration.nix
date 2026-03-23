@@ -3,13 +3,13 @@
 {
   imports = [
     ./vps/hetzner/hardware-configuration.nix
-    ./modules/networking/networkingA.nix
+    ./modules/networking/networking.nix
+    ./modules/networking/proxy.nix
     ./modules/security.nix
     ./users/users.nix
     ./modules/zsh.nix
     ./modules/vm.nix
     ./modules/matrix/synapse.nix
-    ./modules/networking/proxy.nix
    ];
 
   # nix settings
