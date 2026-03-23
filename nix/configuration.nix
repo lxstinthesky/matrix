@@ -60,6 +60,7 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
+    direnv
   ];
 
   # This value determines the NixOS release from which the default
