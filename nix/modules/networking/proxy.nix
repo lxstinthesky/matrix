@@ -11,6 +11,9 @@ let
   '';
 in
 {
+  security.acme.acceptTerms = true;
+  security.acme.defaults.email = "hikern@proton.me";
+  
   services.nginx = {
     enable = true;
     recommendedTlsSettings = true;
