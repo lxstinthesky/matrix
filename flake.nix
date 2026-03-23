@@ -51,5 +51,12 @@
         traceroute
       ];
     };
+    devShells.aarch64-linux.default = nixpkgs.legacyPackages.aarch64-linux.mkShell {
+      buildInputs = with nixpkgs.legacyPackages.aarch64-linux; [
+        git
+        dig
+        traceroute
+      ];
+    };
   };
 }
