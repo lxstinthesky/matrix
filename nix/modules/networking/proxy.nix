@@ -13,7 +13,7 @@ in
 {
   security.acme.acceptTerms = true;
   security.acme.defaults.email = "hikern@proton.me";
-  
+
   services.nginx = {
     enable = true;
     recommendedTlsSettings = true;
@@ -53,9 +53,9 @@ in
         '';
         # Forward all Matrix API calls to the synapse Matrix homeserver. A trailing slash
         # *must not* be used here.
-        locations."/_matrix".proxyPass = "http://[::1]:8008";
+        locations."/_matrix".proxyPass = "http://127.0.0.1:8008";
         # Forward requests for e.g. SSO and password-resets.
-        locations."/_synapse/client".proxyPass = "http://[::1]:8008";
+        locations."/_synapse/client".proxyPass = "http://127.0.0.1:8008";
       };
     };
   };
