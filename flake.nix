@@ -46,7 +46,9 @@
     # execute: nix develop or use direnv
     devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
       buildInputs = with nixpkgs.legacyPackages.x86_64-linux; [
-        # git
+        git
+        dig
+        traceroute
       ];
     };
   };
