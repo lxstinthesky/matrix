@@ -4,6 +4,13 @@ let
   baseUrl = "https://${fqdn}";
 in
 {
+  sops.secrets = {
+    "matrix-shared-secret" = {
+      mode = "0400";
+      owner = "matrix-synapse";
+      sopsFile = ../../../secrets/matrix.yaml;
+    };
+  };
   services.postgresql = {
     enable = true;
     enableTCPIP = false; # only using unix sockets
@@ -37,6 +44,9 @@ in
     settings.database.args = {
       user = "matrix-synapse";
     };
+
+    settings.enable_registration = false;
+    extraConfigFiles = [ "/run/secrets/matrix/shared-secret" ];
     
 
     settings.listeners = [
