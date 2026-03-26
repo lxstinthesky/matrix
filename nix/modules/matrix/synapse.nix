@@ -5,7 +5,7 @@ let
 in
 {
   sops.secrets = {
-    "matrix-shared-secret" = {
+    "matrix/shared-secret" = {
       mode = "0400";
       owner = "matrix-synapse";
       sopsFile = ../../../secrets/matrix.yaml;
