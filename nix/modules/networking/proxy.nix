@@ -60,6 +60,9 @@ in
       "turn.${config.networking.domain}" = {
         forceSSL = true;
         enableACME = true;
+        locations."/".extraConfig = ''
+          return 404;
+        '';
       };
     };
   };

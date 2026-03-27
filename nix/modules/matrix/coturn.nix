@@ -7,7 +7,7 @@ in
   sops.secrets = {
     "coturn/static-auth-secret" = {
       mode = "0400";
-      owner = "coturn";
+      owner = "turnserver";
       sopsFile = ../../../secrets/coturn.yaml;
     };
   };
@@ -74,16 +74,18 @@ in
     }
   ];
 
-   # get a certificate
-  security.acme.certs.${config.services.coturn.realm} = {
-    postRun = "systemctl restart coturn.service";
-    group = "turnserver";
-  };
+  # The ACME cert for the turn domain is managed by nginx (via enableACME on
+  # the virtualHost in proxy.nix). We just need to restart coturn when it renews.
+  security.acme.certs.${config.services.coturn.realm}.postRun =
+    "systemctl restart coturn.service";
+
+  # Allow turnserver to read the nginx-owned ACME certificates.
+  users.users.turnserver.extraGroups = [ "nginx" ];
 
   # configure synapse to point users to coturn
   services.matrix-synapse.settings = with config.services.coturn; {
     turn_uris = ["turn:${realm}:3478?transport=udp" "turn:${realm}:3478?transport=tcp"];
-    turn_shared_secret = static-auth-secret;
+    turn_shared_secret_path = static-auth-secret-file;
     turn_user_lifetime = "1h";
   };
 }
