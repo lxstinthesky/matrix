@@ -49,6 +49,7 @@
         git
         dig
         traceroute
+        matrix-synapse
       ];
     };
     devShells.aarch64-linux.default = nixpkgs.legacyPackages.aarch64-linux.mkShell {
@@ -56,6 +57,7 @@
         git
         dig
         traceroute
+        matrix-synapse
       ];
     };
   };
