@@ -10,6 +10,7 @@
     ./modules/zsh.nix
     ./modules/vm.nix
     ./modules/matrix/synapse.nix
+    ./modules/matrix/coturn.nix
    ];
 
   # nix settings
