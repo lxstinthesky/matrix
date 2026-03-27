@@ -57,6 +57,10 @@ in
         # Forward requests for e.g. SSO and password-resets.
         locations."/_synapse/client".proxyPass = "http://127.0.0.1:8008";
       };
+      "turn.${config.networking.domain}" = {
+        forceSSL = true;
+        enableACME = true;
+      };
     };
   };
 }
