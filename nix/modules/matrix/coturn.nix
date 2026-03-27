@@ -6,7 +6,7 @@ in
 {
   sops.secrets = {
     "coturn/static-auth-secret" = {
-      mode = "0400";
+      mode = "0440";
       owner = "turnserver";
       sopsFile = ../../../secrets/coturn.yaml;
     };
