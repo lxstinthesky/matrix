@@ -81,6 +81,7 @@ in
 
   # Allow turnserver to read the nginx-owned ACME certificates.
   users.users.turnserver.extraGroups = [ "nginx" ];
+  users.users.matrix-synapse.extraGroups = [ "turnserver" ];
 
   # configure synapse to point users to coturn
   services.matrix-synapse.settings = with config.services.coturn; {
