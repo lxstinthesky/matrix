@@ -3,3 +3,21 @@
 
 # Require a registration token for new accounts (token must be created via admin API).
 registration_requires_token: true
+
+media_retention:
+  local_media_lifetime: 90d
+  remote_media_lifetime: 14d
+
+# message retention:
+# Limits how long room events (messages) are stored.
+# Rooms can set their own retention policy; this config sets server-wide defaults and limits.
+retention:
+  enabled: true
+  default_policy:
+    max_lifetime: 180d
+  allowed_lifetime_max: 180d
+  purge_jobs:
+  - longest_max_lifetime: 7d
+    interval: 12h
+  - shortest_max_lifetime: 3d
+    interval: 1d
