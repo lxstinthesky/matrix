@@ -10,7 +10,7 @@
 
   # Access by wireguard only!
   virtualisation.oci-containers.containers.ketesa = {
-    image = "ghcr.io/etkecc/ketesa:latest";
+    image = "etkecc/ketesa:v0.11.4-etke53";
     autoStart = true;
     ports = [ "10.100.0.1:8888:8080" ];
     volumes = [
