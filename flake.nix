@@ -50,6 +50,7 @@
         dig
         traceroute
         matrix-synapse
+        livekit # to generate keys
       ];
     };
     devShells.aarch64-linux.default = nixpkgs.legacyPackages.aarch64-linux.mkShell {
@@ -58,6 +59,7 @@
         dig
         traceroute
         matrix-synapse
+        livekit # to generate keys
       ];
     };
   };

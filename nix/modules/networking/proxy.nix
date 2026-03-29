@@ -3,6 +3,14 @@ let
   fqdn = "${config.networking.hostName}.${config.networking.domain}";
   baseUrl = "https://${fqdn}";
   clientConfig."m.homeserver".base_url = baseUrl;
+  #clientConfig."m.identity_server".base_url = "https://vector.im";
+  clientConfig."org.matrix.msc3575.proxy".url = baseUrl;
+  clientConfig."org.matrix.msc4143.rtc_foci" = [
+    {
+      type = "livekit";
+      livekit_service_url = "${baseUrl}/livekit/jwt";
+    }
+  ];
   serverConfig."m.server" = "${fqdn}:443";
   mkWellKnown = data: ''
     default_type application/json;
@@ -56,6 +64,25 @@ in
         locations."/_matrix".proxyPass = "http://127.0.0.1:8008";
         # Forward requests for e.g. SSO and password-resets.
         locations."/_synapse/client".proxyPass = "http://127.0.0.1:8008";
+        
+        locations."^~ /livekit/jwt/" = {
+          priority = 400;
+          proxyPass = "http://[::1]:${toString config.services.lk-jwt-service.port}/";
+        };
+        locations."^~ /livekit/sfu/" = {
+          extraConfig = ''
+            proxy_send_timeout 120;
+            proxy_read_timeout 120;
+            proxy_buffering off;
+
+            proxy_set_header Accept-Encoding gzip;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+          '';
+          priority = 400;
+          proxyPass = "http://[::1]:${toString config.services.livekit.settings.port}/";
+          proxyWebsockets = true;
+        };
       };
       "turn.${config.networking.domain}" = {
         forceSSL = true;

@@ -11,6 +11,7 @@
     ./modules/vm.nix
     ./modules/matrix/synapse.nix
     ./modules/matrix/coturn.nix
+    ./modules/matrix/livekit.nix
    ];
 
   # nix settings
