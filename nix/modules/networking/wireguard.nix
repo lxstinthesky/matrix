@@ -1,18 +1,4 @@
 # WireGuard VPN server
-# 
-# === One-time setup ===
-#
-# 1. Generate server keypair (on any machine with wireguard-tools):
-#      wg genkey | tee server-private.key | wg pubkey > server-public.key
-#
-# 2. Encrypt the private key into sops:
-#      Add "wireguard/server-private-key" to secrets/wireguard.yaml and encrypt it.
-#
-# 3. For each client (laptop, phone, etc.):
-#      wg genkey | tee client-private.key | wg pubkey > client-public.key
-#    Add the client's PUBLIC key as a new peer below.
-#    Give the client its private key + the server public key to configure their WireGuard app.
-#
 # === Client config template ===
 #
 #   [Interface]
