@@ -1,3 +1,3 @@
 {
-  "restrictBaseUrl": "https://matrix.asterism.ch"
+  "restrictBaseUrl": "http://10.100.0.1:8008"
 }
