@@ -1,0 +1,5 @@
+# Extra Synapse configuration for options not directly exposed by the NixOS module.
+# This file is deployed to /etc/synapse/homeserver.yaml via environment.etc in synapse.nix.
+
+# Require a registration token for new accounts (token must be created via admin API).
+registration_requires_token: true

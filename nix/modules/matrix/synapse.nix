@@ -33,6 +33,14 @@ in
    "d /run/postgresql 0755 postgres postgres -"
   ];
 
+  # Deploy extra homeserver config (options not exposed by the NixOS module)
+  environment.etc."synapse/homeserver.yaml" = {
+    source = ../../../etc/synapse/homeserver.yaml;
+    mode = "0440";
+    user = "matrix-synapse";
+    group = "matrix-synapse";
+  };
+
   services.matrix-synapse = {
     enable = true;
     settings.server_name = config.networking.domain;
@@ -48,7 +56,8 @@ in
     # registrations via tokens only!
     settings.enable_registration = true;
     extraConfigFiles = [ 
-      "/run/secrets/matrix/shared-secret" 
+      "/run/secrets/matrix/shared-secret"
+      "/etc/synapse/homeserver.yaml"
     ];
 
     settings.max_upload_size = "50M";
