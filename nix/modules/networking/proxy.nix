@@ -49,10 +49,17 @@ in
         # Further reference can be found in the upstream docs at
         # https://spec.matrix.org/latest/client-server-api/#getwell-knownmatrixclient
         locations."= /.well-known/matrix/client".extraConfig = mkWellKnown clientConfig;
+        extraConfig = ''
+          client_max_body_size 50M;
+        '';
       };
       "${fqdn}" = {
         enableACME = true;
         forceSSL = true;
+        # Align nginx's upload limit with Synapse's max_upload_size
+        extraConfig = ''
+          client_max_body_size 50M;
+        '';
         # It's also possible to do a redirect here or something else, this vhost is not
         # needed for Matrix. It's recommended though to *not put* element
         # here, see also the section about Element.

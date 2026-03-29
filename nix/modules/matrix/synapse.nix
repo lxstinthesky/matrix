@@ -45,9 +45,13 @@ in
       user = "matrix-synapse";
     };
 
-    settings.enable_registration = false;
-    extraConfigFiles = [ "/run/secrets/matrix/shared-secret" ];
-    
+    # registrations via tokens only!
+    settings.enable_registration = true;
+    extraConfigFiles = [ 
+      "/run/secrets/matrix/shared-secret" 
+    ];
+
+    settings.max_upload_size = "50M";
 
     settings.listeners = [
       { port = 8008;
