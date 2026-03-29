@@ -12,7 +12,7 @@
   virtualisation.oci-containers.containers.ketesa = {
     image = "ghcr.io/etkecc/ketesa:latest";
     autoStart = true;
-    ports = [ "127.0.0.1:8888:8080" ];
+    ports = [ "10.100.0.1:8888:8080" ];
     volumes = [
       # /var/public is the container's document root where static files are served from
       "/etc/ketesa/config.json:/var/public/config.json:ro"
