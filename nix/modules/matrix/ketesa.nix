@@ -1,21 +1,29 @@
-{ config, pkgs, ... }:
-{
-  # Deploy the ketesa config file from the repo into /etc/ketesa/config.json
-  environment.etc."ketesa/config.json" = {
-    source = ../../../etc/ketesa/config.json;
-    mode = "0440";
-    user = "root";
-    group = "root";
+{ config, pkgs, lib, ... }:
+let
+  ketesaRoot = pkgs.stdenvNoCC.mkDerivation {
+    name = "ketesa-v0.11.1-etke53";
+    src = pkgs.fetchurl {
+      url ="https://github.com/etkecc/ketesa/releases/download/v0.11.1-etke53/synapse-admin.tar.gz";
+      sha256 = "sha256-VUXTMMaesqtOvgINhCjeIpgB++dFWumeXNdgxdx/AqE=";
+    };
+    dontBuild = true;
+    installPhase = ''
+      mkdir -p $out
+      tar -xzf $src -C $out --strip-components=1
+      # Overwrite the bundled config.json with our own
+      cp ${../../../etc/ketesa/config.json} $out/config.json
+    '';
   };
-
-  # Access by wireguard only!
-  virtualisation.oci-containers.containers.ketesa = {
-    image = "etkecc/ketesa:v0.11.4-etke53";
-    autoStart = true;
-    ports = [ "10.100.0.1:8888:8080" ];
-    volumes = [
-      # /var/public is the container's document root where static files are served from
-      "/etc/ketesa/config.json:/var/public/config.json:ro"
-    ];
+in
+{
+  # Serve ketesa as static files via nginx on the WireGuard interface only.
+  # Access: connect to WireGuard, then open http://10.100.0.1/ketesa/
+  services.nginx.virtualHosts."vpn-ketesa" = {
+    listen = [{ addr = "10.100.0.1"; port = 80; ssl = false; }];
+    serverName = "_";
+    locations."/ketesa/" = {
+      root = lib.mkForce ketesaRoot;
+      tryFiles = "$uri /index.html";
+    };
   };
 }

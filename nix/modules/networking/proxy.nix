@@ -98,12 +98,6 @@ in
           return 404;
         '';
       };
-      # VPN-only nginx virtual host — listens exclusively on the WireGuard interface.
-      "vpn" = {
-        listen = [{ addr = "10.100.0.1"; port = 80; ssl = false; }];
-        serverName = "10.100.0.1";
-        locations."/_synapse/admin".proxyPass = "http://127.0.0.1:8008";      
-      };
     };
   };
 }
