@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 let
   ketesaRoot = pkgs.stdenvNoCC.mkDerivation {
     name = "ketesa-v0.11.1-etke53";
@@ -22,8 +22,10 @@ in
     listen = [{ addr = "10.100.0.1"; port = 80; ssl = false; }];
     serverName = "_";
     locations."/ketesa/" = {
-      root = lib.mkForce ketesaRoot;
-      tryFiles = "$uri /index.html";
+      alias = "${ketesaRoot}/";
+      extraConfig = ''
+        try_files $uri $uri/ /ketesa/index.html;
+      '';
     };
   };
 }
