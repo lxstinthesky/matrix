@@ -12,6 +12,7 @@
     ./modules/matrix/synapse.nix
     ./modules/matrix/coturn.nix
     ./modules/matrix/livekit.nix
+    ./modules/matrix/ketesa.nix
    ];
 
   # nix settings
@@ -59,6 +60,10 @@
 
   # Allow unfree packages
   # nixpkgs.config.allowUnfree = true;
+
+  # Use Docker as the OCI container backend (for ketesa)
+  virtualisation.oci-containers.backend = "docker";
+  virtualisation.docker.enable = true;
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
