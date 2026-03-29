@@ -8,10 +8,7 @@
     group = "root";
   };
 
-  # Ketesa listens on localhost only — access it via SSH tunnel:
-  #   ssh -L 8888:127.0.0.1:8888 neo@188.245.32.95 -N
-  # then open http://localhost:8888 in your browser.
-  # No public vhost or DNS record needed.
+  # Access by wireguard only!
   virtualisation.oci-containers.containers.ketesa = {
     image = "ghcr.io/etkecc/ketesa:latest";
     autoStart = true;

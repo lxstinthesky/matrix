@@ -5,6 +5,7 @@
     ./vps/hetzner/hardware-configuration.nix
     ./modules/networking/networking.nix
     ./modules/networking/proxy.nix
+    ./modules/networking/wireguard.nix
     ./modules/security.nix
     ./users/users.nix
     ./modules/zsh.nix
