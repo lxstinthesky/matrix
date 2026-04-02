@@ -21,6 +21,8 @@ in
   services.nginx.virtualHosts."vpn-ketesa" = {
     listen = [{ addr = "10.100.0.1"; port = 80; ssl = false; }];
     serverName = "_";
+    locations."/_matrix".proxyPass = "http://127.0.0.1:8008";
+    locations."/_synapse/admin".proxyPass = "http://127.0.0.1:8008";
     locations."/ketesa/" = {
       alias = "${ketesaRoot}/";
       extraConfig = ''
