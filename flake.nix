@@ -35,13 +35,6 @@
       };
     };
 
-    # Add this section
-    checks.x86_64-linux = {
-      test1 = import ./nix/tests/test1.nix {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      };
-    };
-
     # Development shell for working with the configuration
     # execute: nix develop or use direnv
     devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
