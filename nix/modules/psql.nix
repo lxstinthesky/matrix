@@ -62,9 +62,9 @@
 
       mkdir -p "$metrics_dir"
 
-      latest_file=$(find /var/backup/postgresql -maxdepth 1 -type f 2>/dev/null | sort | tail -n 1)
-      if [ -n "$latest_file" ] && [ -f "$latest_file" ]; then
-        latest_mtime=$(stat -c %Y "$latest_file")
+      latest_mtime=$(find /var/backup/postgresql -type f -printf '%T@\n' 2>/dev/null | sort -n | tail -n 1)
+      if [ -n "$latest_mtime" ]; then
+        latest_mtime=$(printf '%.0f' "$latest_mtime")
       else
         latest_mtime=0
       fi

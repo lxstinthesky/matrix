@@ -18,7 +18,7 @@ groups:
         summary: Root filesystem usage is high
         description: Root filesystem usage on {{ $labels.instance }} is above 85%.
     - alert: PostgreSQLBackupStale
-      expr: time() - postgresql_backup_last_success_timestamp_seconds > 93600
+      expr: postgresql_backup_last_success_timestamp_seconds > 0 and time() - postgresql_backup_last_success_timestamp_seconds > 93600
       for: 1h
       labels:
         severity: warning
