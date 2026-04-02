@@ -57,7 +57,7 @@
         ];
       }
     ];
-    rules = [ "${../../etc/prometheus/rules.yaml}" ];
+    ruleFiles = [ ../../etc/prometheus/rules.yaml ];
   };
 
   services.prometheus.alertmanager = {
