@@ -43,18 +43,19 @@ in
 		owner = "matrix-synapse";
 		group = "matrix-synapse";
 		mode = "0440";
-		content = ''
-			id: doublepuppet
-			url:
-			as_token: ${config.sops.placeholder."whatsapp/double-puppet-as-token"}
-			hs_token: ${config.sops.placeholder."whatsapp/double-puppet-hs-token"}
-			sender_localpart: doublepuppet
-			rate_limited: false
-			namespaces:
-			  users:
-			    - regex: '@.*:${domainRegex}'
-			      exclusive: false
-		'';
+		content = lib.concatStringsSep "\n" [
+			"id: doublepuppet"
+			"url:"
+			"as_token: ${config.sops.placeholder."whatsapp/double-puppet-as-token"}"
+			"hs_token: ${config.sops.placeholder."whatsapp/double-puppet-hs-token"}"
+			"sender_localpart: doublepuppet"
+			"rate_limited: false"
+			"namespaces:"
+			"  users:"
+			"    - regex: '@.*:${domainRegex}'"
+			"      exclusive: false"
+			""
+		];
 	};
 
 	services.matrix-synapse.settings.app_service_config_files = [
