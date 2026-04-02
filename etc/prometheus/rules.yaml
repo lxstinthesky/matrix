@@ -1,0 +1,27 @@
+groups:
+- name: host
+  rules:
+    - alert: InstanceDown
+      expr: up{job!="prometheus"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: A monitored target is down
+        description: Prometheus has not been able to scrape {{ $labels.job }} on {{ $labels.instance }} for 5 minutes.
+    - alert: HighDiskUsage
+      expr: 100 * (1 - node_filesystem_avail_bytes{fstype!="tmpfs",mountpoint="/"} / node_filesystem_size_bytes{fstype!="tmpfs",mountpoint="/"}) > 85
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: Root filesystem usage is high
+        description: Root filesystem usage on {{ $labels.instance }} is above 85%.
+    - alert: PostgreSQLBackupStale
+      expr: time() - postgresql_backup_last_success_timestamp_seconds > 93600
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        summary: PostgreSQL dump is stale
+        description: No fresh PostgreSQL dump has been observed for more than 26 hours.

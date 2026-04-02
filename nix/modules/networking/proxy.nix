@@ -98,6 +98,10 @@ in
           return 404;
         '';
       };
+      "vpn-ketesa" = {
+        locations."/prometheus/".proxyPass = "http://127.0.0.1:9090/";
+        locations."/alertmanager/".proxyPass = "http://127.0.0.1:9093/";
+      };
     };
   };
 }

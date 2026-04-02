@@ -11,27 +11,7 @@ in
       sopsFile = ../../../secrets/matrix.yaml;
     };
   };
-  services.postgresql = {
-    enable = true;
-    enableTCPIP = false; # only using unix sockets
-    package = pkgs.postgresql_17; 
-    initialScript = pkgs.writeText "synapse-init.sql" ''
-      CREATE ROLE "matrix-synapse" LOGIN;
-      CREATE DATABASE "matrix-synapse"
-        WITH OWNER "matrix-synapse"
-        TEMPLATE template0
-        LC_COLLATE = 'C'
-        LC_CTYPE = 'C';
-    '';
-    settings = {
-      unix_socket_directories = "/run/postgresql";
-    };
-  };
-
-  # setting up unix socket directory for postgresql
-  systemd.tmpfiles.rules = [
-   "d /run/postgresql 0755 postgres postgres -"
-  ];
+  
 
   # Deploy extra homeserver config (options not exposed by the NixOS module)
   environment.etc."synapse/homeserver.yaml" = {

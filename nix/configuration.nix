@@ -7,6 +7,8 @@
     ./modules/networking/proxy.nix
     ./modules/networking/wireguard.nix
     ./modules/security.nix
+    ./modules/operations.nix
+    ./modules/psql.nix
     ./users/users.nix
     ./modules/zsh.nix
     ./modules/vm.nix
