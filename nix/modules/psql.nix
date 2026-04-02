@@ -27,6 +27,14 @@
     compressionLevel = 6;
   };
 
+  services.postgresql.ensureDatabases = [ "mautrix-whatsapp" ];
+  services.postgresql.ensureUsers = [
+    {
+      name = "mautrix-whatsapp";
+      ensureDBOwnership = true;
+    }
+  ];
+
   systemd.services.prune-postgresql-backups = {
     description = "Prune old PostgreSQL backup dumps";
     serviceConfig = {

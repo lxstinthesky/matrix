@@ -16,6 +16,7 @@
     ./modules/matrix/coturn.nix
     ./modules/matrix/livekit.nix
     ./modules/matrix/ketesa.nix
+    ./modules/matrix/bridges/whatsapp.nix
    ];
 
   # nix settings
@@ -63,6 +64,9 @@
 
   # Allow unfree packages
   # nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "olm-3.2.16"
+  ];
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
