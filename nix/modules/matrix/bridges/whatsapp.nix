@@ -91,7 +91,9 @@ in
 
 			bridge = {
 				command_prefix = "!wa";
+				private_chat_portal_meta = true;
 				relay.enabled = true;
+				sync_direct_chat_list = true;
 				permissions = {
 					"${config.networking.domain}" = "user";
 				};
