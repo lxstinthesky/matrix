@@ -14,9 +14,7 @@ in
 			restartUnits = [ "${config.services.matrix-synapse.serviceUnit}" ];
 		};
 		"hookshot/passkey" = {
-			owner = "matrix-hookshot";
-			group = "matrix-hookshot";
-			mode = "0400";
+			mode = "0444";
 			sopsFile = ../../../../secrets/hookshot.yaml;
 			restartUnits = [ "matrix-hookshot.service" ];
 		};
