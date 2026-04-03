@@ -16,6 +16,7 @@
     ./modules/matrix/coturn.nix
     ./modules/matrix/livekit.nix
     ./modules/matrix/ketesa.nix
+    ./modules/matrix/bridges/hookshot.nix
     ./modules/matrix/bridges/whatsapp.nix
    ];
 
