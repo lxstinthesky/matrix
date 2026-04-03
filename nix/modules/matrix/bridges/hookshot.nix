@@ -13,11 +13,6 @@ in
 			sopsFile = ../../../../secrets/hookshot.yaml;
 			restartUnits = [ "${config.services.matrix-synapse.serviceUnit}" ];
 		};
-		"hookshot/passkey" = {
-			mode = "0444";
-			sopsFile = ../../../../secrets/hookshot.yaml;
-			restartUnits = [ "matrix-hookshot.service" ];
-		};
 	};
 
 	sops.templates."matrix-hookshot-registration.yaml" = {
@@ -54,7 +49,6 @@ in
 		registrationFile = config.sops.templates."matrix-hookshot-registration.yaml".path;
 		serviceDependencies = [ config.services.matrix-synapse.serviceUnit ];
 		settings = {
-			passFile = config.sops.secrets."hookshot/passkey".path;
 
 			bridge = {
 				domain = config.networking.domain;
