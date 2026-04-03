@@ -1,20 +1,62 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 let
 	fqdn = "${config.networking.hostName}.${config.networking.domain}";
 	domainRegex = lib.replaceStrings [ "." ] [ "\\." ] config.networking.domain;
-	registrationFile = "/var/lib/matrix-hookshot/registration.yml";
-	hookshotUser = "matrix-hookshot";
-	hookshotGroup = "matrix-hookshot";
 in
 {
-	services.matrix-synapse.settings.app_service_config_files = [ registrationFile ];
+	sops.secrets = {
+		"hookshot/as-token" = {
+			sopsFile = ../../../../secrets/hookshot.yaml;
+			restartUnits = [ "matrix-hookshot.service" "${config.services.matrix-synapse.serviceUnit}" ];
+		};
+		"hookshot/hs-token" = {
+			sopsFile = ../../../../secrets/hookshot.yaml;
+			restartUnits = [ "${config.services.matrix-synapse.serviceUnit}" ];
+		};
+		"hookshot/passkey" = {
+			owner = "matrix-hookshot";
+			group = "matrix-hookshot";
+			mode = "0400";
+			sopsFile = ../../../../secrets/hookshot.yaml;
+			restartUnits = [ "matrix-hookshot.service" ];
+		};
+	};
+
+	sops.templates."matrix-hookshot-registration.yaml" = {
+		owner = "matrix-synapse";
+		group = "matrix-synapse";
+		mode = "0440";
+		content = lib.concatStringsSep "\n" [
+			"id: hookshot"
+			"url: http://127.0.0.1:9993"
+			"as_token: ${config.sops.placeholder."hookshot/as-token"}"
+			"hs_token: ${config.sops.placeholder."hookshot/hs-token"}"
+			"sender_localpart: hookshot"
+			"rate_limited: false"
+			"namespaces:"
+			"  rooms: []"
+			"  aliases: []"
+			"  users:"
+			"    - regex: '@hookshot:${domainRegex}'"
+			"      exclusive: true"
+			"    - regex: '@feeds:${domainRegex}'"
+			"      exclusive: true"
+			"    - regex: '@_webhooks_.*:${domainRegex}'"
+			"      exclusive: true"
+			""
+		];
+	};
+
+	services.matrix-synapse.settings.app_service_config_files = [
+		config.sops.templates."matrix-hookshot-registration.yaml".path
+	];
 
 	services.matrix-hookshot = {
 		enable = true;
-		registrationFile = registrationFile;
+		registrationFile = config.sops.templates."matrix-hookshot-registration.yaml".path;
 		serviceDependencies = [ config.services.matrix-synapse.serviceUnit ];
 		settings = {
-			passFile = "/var/lib/matrix-hookshot/passkey.pem";
+			passFile = config.sops.secrets."hookshot/passkey".path;
 
 			bridge = {
 				domain = config.networking.domain;
@@ -81,52 +123,6 @@ in
 
 			metrics.enabled = true;
 		};
-	};
-
-	systemd.services.matrix-hookshot-registration = {
-		description = "Generate matrix-hookshot registration file";
-		wantedBy = [ config.services.matrix-synapse.serviceUnit "matrix-hookshot.service" ];
-		before = [ config.services.matrix-synapse.serviceUnit "matrix-hookshot.service" ];
-		serviceConfig = {
-			Type = "oneshot";
-			User = "root";
-			Group = "root";
-		};
-		script = lib.concatStringsSep "\n" [
-			"install -d -m 0750 -o ${hookshotUser} -g ${hookshotGroup} /var/lib/matrix-hookshot"
-			""
-			"if [ ! -f ${registrationFile} ]; then"
-			"\tas_token=\"$(${pkgs.openssl}/bin/openssl rand -hex 32)\""
-			"\ths_token=\"$(${pkgs.openssl}/bin/openssl rand -hex 32)\""
-			""
-			"\tcat > ${registrationFile} <<'EOF'"
-			"id: hookshot"
-			"url: http://127.0.0.1:9993"
-			"as_token: __AS_TOKEN__"
-			"hs_token: __HS_TOKEN__"
-			"sender_localpart: hookshot"
-			"rate_limited: false"
-			"namespaces:"
-			"  rooms: []"
-			"  aliases: []"
-			"  users:"
-			"    - regex: '@hookshot:${domainRegex}'"
-			"      exclusive: true"
-			"    - regex: '@feeds:${domainRegex}'"
-			"      exclusive: true"
-			"    - regex: '@_webhooks_.*:${domainRegex}'"
-			"      exclusive: true"
-			"EOF"
-			""
-			"\t${pkgs.gnused}/bin/sed -i \\\""
-			"\t\t-e \"s|__AS_TOKEN__|$as_token|\" \\\""
-			"\t\t-e \"s|__HS_TOKEN__|$hs_token|\" \\\""
-			"\t\t${registrationFile}"
-			"fi"
-			""
-			"chown ${hookshotUser}:matrix-synapse ${registrationFile}"
-			"chmod 0440 ${registrationFile}"
-		];
 	};
 
 	services.nginx.virtualHosts."${fqdn}" = {
