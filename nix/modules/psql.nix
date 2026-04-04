@@ -21,6 +21,7 @@
   services.postgresqlBackup = {
     enable = true;
     databases = [ "matrix-synapse" ];
+    pgdumpOptions = "--exclude-table-data=public.e2e_one_time_keys_json";
     location = "/var/backup/postgresql";
     startAt = "03:15:00";
     compression = "zstd";
