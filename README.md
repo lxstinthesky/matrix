@@ -1,24 +1,74 @@
-# matrix
+# The Matrix Protocol
 Who needs something else?
 
-# Nixos Setup
+# Depolyment
 
-## Automatic Tests
+## Manual Steps
 
-Using the nixos framework, tests can be written and performed. See https://nixos.org/manual/nixos/stable/index.html#sec-nixos-tests
+# Operation
 
-Perform all tests using `nix flake check`. Call a specific test using `nix build .#checks.x86_64-linux.test1`
+## PostgreSQL Backups
 
-## Testing the VM
+The current PostgreSQL backup configuration is defined in [nix/modules/psql.nix](/home/henrik/Code/matrix/nix/modules/psql.nix).
 
-The VM can be build using `nixos-rebuild build-vm --flake .#matrix` and started using `result/bin/run-nixos-vm`.
+Important: the current backup job only dumps the `matrix-synapse` database. The `mautrix-whatsapp` database is created on the host, but it is not included in `services.postgresqlBackup.databases` right now.
 
-See also https://gist.github.com/FlakM/0535b8aa7efec56906c5ab5e32580adf
+Backups are written to `/var/backup/postgresql` and, with the current config, the active dump file is:
 
-# Setup
+```sh
+/var/backup/postgresql/matrix-synapse.sql.zstd
+```
 
-## Nixos-Everywhere
+The previous dump is kept as:
 
-## Secret Depolyment
+```sh
+/var/backup/postgresql/matrix-synapse.prev.sql.zstd
+```
 
-The initial secret deployment needs to be performed manually, sadly ...
+### Force a Dump
+
+To trigger a dump immediately, start the generated systemd unit for the configured database:
+
+```sh
+sudo systemctl start postgresqlBackup-matrix-synapse.service
+```
+
+To confirm that the dump exists and has a fresh timestamp:
+
+```sh
+sudo ls -lh /var/backup/postgresql
+```
+
+### Restore the Database
+
+If the production `matrix-synapse` database must be fully restored from backup:
+
+1. Stop services that write to Synapse before restoring:
+
+```sh
+sudo systemctl stop matrix-hookshot.service mautrix-whatsapp.service matrix-synapse.service
+```
+
+2. Drop and recreate the database with the same owner and locale settings:
+
+```sh
+sudo -u postgres dropdb matrix-synapse
+sudo -u postgres createdb \
+	--owner=matrix-synapse \
+	--template=template0 \
+	--lc-collate=C \
+	--lc-ctype=C \
+	matrix-synapse
+```
+
+3. Restore the dump:
+
+```sh
+sudo -u postgres sh -c 'zstd -dc /var/backup/postgresql/matrix-synapse.sql.zstd | psql matrix-synapse'
+```
+
+4. Start the services again:
+
+```sh
+sudo systemctl start matrix-synapse.service mautrix-whatsapp.service matrix-hookshot.service
+```
